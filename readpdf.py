@@ -19,10 +19,23 @@ def resub(x):
     return re.sub(',','',x)
 
 # leer la tabla de pdf
+# tabula.io.read_pdf(input_path='pdf path', pages='# page to read', stream='False', lattice='False', pandas_options='{'header':None}',area={top,left,bottom,rigth}))
 
-path = "/Users/JuanJose/Desktop/Poblacion INE/"
-pdf_path = path+"Tomo 10 Atlantida.pdf"
-df = tabula.io.read_pdf(input_path=pdf_path,pages='3',stream=True,lattice=False,pandas_options={'header': None})[0]
+
+
+
+#### ENDESA
+ENDESA_2011_URL= "https://www.ine.gob.hn/publicaciones/endesa/Honduras-ENDESA-2011-2012.pdf"
+ENDESA_2011=pd.DataFrame(columns=['Depto','Año'])
+
+tablas = {'Aguas Mejoradas':{'pag':57,'columnas':[1,2,3,4,5,6,10],'area':(183.4,53.02,389.65,442.16)}}
+
+df = tabula.io.read_pdf(input_path=ENDESA_2011_URL,pages=tablas['Aguas Mejoradas']['pag'],stream=True,lattice=False,pandas_options={'header': None},area=tablas['Aguas Mejoradas']['area'])[0]
+tabla=df.iloc[:,tablas['Aguas Mejoradas']['columnas']].sum(axis=1)
+
+
+
+
 
 #sacar la tabla especifica 
 df1=df[0]
@@ -33,13 +46,16 @@ df1['Año']=2012
 df1=df1[[0,'Valor','Año']]
 df1=df1.iloc[5:27,  [0,1,2,3,5]]
 
-
 # exportar la tabla a excel 
-df1.to_excel("/Users/JuanJose/Desktop/ENDESA 2011-12 Provisional.xlsx")
+df.to_excel("/Users/JuanJose/Desktop/ENDESA 2011-12 Provisional.xlsx")
 
 
 
 
+
+
+
+#PROYECCIONES POBLACIONALES 
 
 # info de población de niñez total, urbana y rural por año y rango etario 
 años = {2013:3,2014:5,2015:7,2016:9,2017:11,2018:13,2019:15,2020:17,2021:19,2022:21}
