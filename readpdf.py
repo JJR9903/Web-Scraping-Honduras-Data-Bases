@@ -42,8 +42,6 @@ df1.to_excel("/Users/JuanJose/Desktop/ENDESA 2011-12 Provisional.xlsx")
 
 
 # info de población de niñez total, urbana y rural por año y rango etario 
-
-
 años = {2013:3,2014:5,2015:7,2016:9,2017:11,2018:13,2019:15,2020:17,2021:19,2022:21}
 Pob=pd.DataFrame(columns=["Año","Depto","Total", "Urbana", "Rural", "0-4 Años", "5-9 Años", "10-14 Años", "15-19 Años"],index=años.keys())
 Poblacion=pd.DataFrame()
@@ -52,6 +50,7 @@ Deptos = ["Atlantida","Comayagua","El Paraiso","Intibuca","Lempira","Santa Barba
 
 for Depto in Deptos: 
     pdf_path = path+"Tomo 10 "+Depto+".pdf"
+    url_pdf_path="https://www.ine.gob.hn/publicaciones/Proyecciones2030Dep/Tomo%2010%20"+Depto+".pdf"
     for k,v in años.items():
         print(Depto,k,v)
         df = tabula.io.read_pdf(input_path=pdf_path,pages=v,stream=True,lattice=False,pandas_options={'header': None})[0]
