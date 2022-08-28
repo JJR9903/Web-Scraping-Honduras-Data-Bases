@@ -4,15 +4,14 @@
 Created on Mon Aug 22 11:07:38 2022
 
 @author: JuanJose
-
-conda update anaconda
-conda install spyder=5.2.2
 """
 
 
 import pandas as pd   
+import numpy as np
 import tabula
 import re
+import os
 
 
 def resub(x):
@@ -24,10 +23,11 @@ def resub(x):
 # leer la tabla de pdf
 # tabula.io.read_pdf(input_path='pdf path', pages='# page to read', stream='False', lattice='False', pandas_options='{'header':None}',area={top,left,bottom,rigth}))
 
+os.chdir('/Users/JuanJose/Library/CloudStorage/GoogleDrive-j.rincon@econometria.com/Mi unidad/SIGADENAH/Bases de Datos')
 
 
 
-#### ENDESA
+#### ENDESA 2011-12
 ENDESA_2011_URL= "https://www.ine.gob.hn/publicaciones/endesa/Honduras-ENDESA-2011-2012.pdf"
 ENDESA_2011=pd.DataFrame(columns=['Depto','Año'])
 ENDESA_2011['Año']=2011
@@ -53,10 +53,10 @@ tablas = {'Aguas Mejoradas':{'pag':57,'columnas':[1,2,3,4,5,6,10],'area':(189.09
           'Parto en Esatablecimiento de Salud': {'pag':230,'columnas':[6],'area':(347.22,106.73,525.18,453.33)},
           'Parto Atendido por Profesional': {'pag':232,'columnas':[8],'area':(333.94,49.06,503.19,462.88)},
           'Revision Post-Natal para la madre': {'pag':236,'columnas':[8],'area':(335.79,67.51,500.79,491.15)},
-          'Revision (por prfoesional) Post-Natal para la madre': {'pag':237,'columnas':[7],'area':(334.24,84.73,503.82,486.81)},
+          'Revision (por profesional) Post-Natal para la madre': {'pag':237,'columnas':[7],'area':(334.24,84.73,503.82,486.81)},
           'Revision Post-Natal para el Bebe': {'pag':239,'columnas':[8],'area':(342,67.12,510,490.77)},
-          'Revision (por prfoesional) Post-Natal para el Bebe': {'pag':241,'columnas':[7],'area':(319,76.79,486.67,477.94)},
-          'Menor tamaño al nacer': {'pag':251,'columnas':[1,2],'area':(356,59.87,532.99,469.49)},
+          'Revision (por profesional) Post-Natal para el Bebe': {'pag':241,'columnas':[7],'area':(319,76.79,486.67,477.94)},
+          #'Menor tamaño al nacer': {'pag':251,'columnas':[1,2],'area':(356,59.87,532.99,469.49)},
           'Pesados al Nacer': {'pag':251,'columnas':[6],'area':(356,59.87,532.99,469.49)},
           'Peso menos de 2.5kg': {'pag':251,'columnas':[8],'area':(356,59.87,532.99,469.49)},
           'NNA de 1 año con Vacunas obligatorias': {'pag':254,'columnas':[9],'area':(259.19,76.1,435.76,488.65)},
@@ -85,11 +85,86 @@ for v in tablas.keys():
 
 ENDESA_2011['Año']=2011
 
-
-
+ENDESA_2011.loc[ENDESA_2011['Depto']=="Islas de la Bahia",'Lactancia Materna Exclusiva']=np.nan
+ENDESA_2011['Lactancia Materna Exclusiva']=pd.to_numeric(ENDESA_2011['Lactancia Materna Exclusiva'])
 
 # exportar la tabla a excel 
-ENDESA_2011.to_excel("/Users/JuanJose/Desktop/ENDESA 2011-12.xlsx")
+ENDESA_2011.to_excel("ENDESA 2011-12 NNA.xlsx", sheet_name="ENDESA 2011-12 ",index=False)
+
+
+
+
+
+
+
+
+
+
+
+#### ENDESA 2019
+ENDESA_2019_os=os.listdir('/Users/JuanJose/Library/CloudStorage/GoogleDrive-j.rincon@econometria.com/Mi unidad/SIGADENAH/Bases de Datos/ENDESA MICS 2019/Excel')
+ENDESA_2019=pd.DataFrame(columns=['Depto','Año'])
+ENDESA_2019['Año']=2019
+ENDESA_2019['Depto']=['Atlantida','Colon','Comayagua','Copan','Cortes','San Pedro Sula','Resto Cortes','Choluteca','El Paraiso','Francisco Morazan','Distrito Central','Resto Fco. Morazan','Gracias a Dios','Intibuca','Islas de la Bahia','La Paz', 'Lempira','Ocotepeque','Olancho','Santa Barbara','Valle','Yoro']
+
+
+# diccionario que especifica para cada variable a sacar del pdf, el nombre de la variable dict.key, la pagína en que se encuentra la tabla, las columnas que necesitan sumar para la variable, y el area de la página pdf en la que se encuentra la tabla 
+tablas = {'Aguas Mejoradas': {'xlsx':ENDESA_2019_os[10],'sheet_name':'1.1','usecols':"A,T",'skiprows':12},
+          'Servicio Sanitario': {'xlsx':ENDESA_2019_os[10],'sheet_name':'3.1','usecols':"A,N",'skiprows':12},
+          'Lavado de manos': {'xlsx':ENDESA_2019_os[10],'sheet_name':'2.1','usecols':"A,L",'skiprows':12},
+          'NNA de crianza': {'xlsx':ENDESA_2019_os[5],'sheet_name':'11.1','usecols':"A,P",'skiprows':13},
+          'NNA huerfanos': {'xlsx':ENDESA_2019_os[5],'sheet_name':'11.1','usecols':"A,C,D,F,I,L",'skiprows':13},
+          'Certificado de Nacimiento': {'xlsx':ENDESA_2019_os[2],'sheet_name':'1.1','usecols':"A,B,C",'skiprows':14},
+          'Registro de Nacimiento': {'xlsx':ENDESA_2019_os[2],'sheet_name':'1.1','usecols':"A,F",'skiprows':14},
+          'Embarazo Adolescente (Muejeres)': {'xlsx':ENDESA_2019_os[9],'sheet_name':'2.2W','usecols':"A,D,E",'skiprows':10},
+          'Mortalidad NeoNatal': {'xlsx':ENDESA_2019_os[4],'sheet_name':'2 (BH)','usecols':"A,B",'skiprows':9},
+          'Mortalidad Post-Neonatal': {'xlsx':ENDESA_2019_os[4],'sheet_name':'2 (BH)','usecols':"A,C",'skiprows':9},
+          'Mortalidad Infantil': {'xlsx':ENDESA_2019_os[4],'sheet_name':'2 (BH)','usecols':"A,D",'skiprows':9},
+          'Mortalidad 1-4 años': {'xlsx':ENDESA_2019_os[4],'sheet_name':'2 (BH)','usecols':"A,E",'skiprows':9},
+          'Mortalidad en la Niñiez': {'xlsx':ENDESA_2019_os[4],'sheet_name':'2 (BH)','usecols':"A,F",'skiprows':9},
+          'Atencion Prenatal': {'xlsx':ENDESA_2019_os[9],'sheet_name':'4.1','usecols':"A,B,C,D,E,F",'skiprows':10},
+          'Atencion Prenatal (Personal de Salud)': {'xlsx':ENDESA_2019_os[9],'sheet_name':'4.1','usecols':"A,I",'skiprows':10},
+          'Parto en Esatablecimiento de Salud': {'xlsx':ENDESA_2019_os[9],'sheet_name':'6.1','usecols':"A,H",'skiprows':11},
+          'Parto Atendido por Profesional': {'xlsx':ENDESA_2019_os[9],'sheet_name':'6.2','usecols':"A,L",'skiprows':11},
+          'Revision Post-Natal para la madre': {'xlsx':ENDESA_2019_os[9],'sheet_name':'8.7','usecols':"A,K",'skiprows':13},
+          'Revision (por profesional) Post-Natal para la madre': {'xlsx':ENDESA_2019_os[9],'sheet_name':'8.8','usecols':"A,H,I,J",'skiprows':13},
+          'Revision Post-Natal para el Bebe': {'xlsx':ENDESA_2019_os[9],'sheet_name':'8.2','usecols':"A,K",'skiprows':13},
+          'Revision (por profesional) Post-Natal para el Bebe': {'xlsx':ENDESA_2019_os[9],'sheet_name':'8.3','usecols':"A,H,I,J",'skiprows':13},
+          #'Menor tamaño al nacer': ,
+          'Pesados al Nacer': {'xlsx':ENDESA_2019_os[9],'sheet_name':'7.1','usecols':"A,D",'skiprows':10},
+          'Peso menos de 2.5kg': {'xlsx':ENDESA_2019_os[9],'sheet_name':'7.1','usecols':"A,H",'skiprows':10},
+          'NNA de 1 año con Vacunas obligatorias': {'xlsx':ENDESA_2019_os[1],'sheet_name':'1.2','usecols':"A,T",'skiprows':14},
+          'NNA de 1 año con Carnet de Vacunacion': {'xlsx':ENDESA_2019_os[1],'sheet_name':'1.2','usecols':"A,W",'skiprows':14},
+          'Prevalencia de Neumonia': {'xlsx':ENDESA_2019_os[1],'sheet_name':'2.1','usecols':"A,C",'skiprows':13},
+          'Prevalencia de Fiebre': {'xlsx':ENDESA_2019_os[1],'sheet_name':'2.1','usecols':"A,D",'skiprows':13},
+          'Prevalencia de Diarrea': {'xlsx':ENDESA_2019_os[1],'sheet_name':'2.1','usecols':"A,B",'skiprows':13},
+          'Lactancia Materna': {'xlsx':ENDESA_2019_os[1],'sheet_name':'7.1','usecols':"A,B",'skiprows':10},
+          'Lactancia Materna Exclusiva': {'xlsx':ENDESA_2019_os[1],'sheet_name':'7.4','usecols':"A,D",'skiprows':13},
+          'Prevalencia de Anemia': {'xlsx':ENDESA_2019_os[1],'sheet_name':'12.1','usecols':"A,B",'skiprows':16},
+          'Baja Talla para la Edad': {'xlsx':ENDESA_2019_os[1],'sheet_name':'8.1','usecols':"A,F",'skiprows':15},
+          'Bajo Peso para la Talla': {'xlsx':ENDESA_2019_os[1],'sheet_name':'8.1','usecols':"A,J",'skiprows':15},
+          'Sobrepeso/Obesidad': {'xlsx':ENDESA_2019_os[1],'sheet_name':'8.1','usecols':"A,M",'skiprows':15},
+          'Bajo Peso para la Edad': {'xlsx':ENDESA_2019_os[1],'sheet_name':'8.1','usecols':"A,B",'skiprows':15},
+          'Prueva VIH durante Atencion Pre-Natal': {'xlsx':ENDESA_2019_os[9],'sheet_name':'11.5','usecols':"A,E",'skiprows':10},
+          'Assitencia a Educacion Temprana': {'xlsx':ENDESA_2019_os[8],'sheet_name':'1.1','usecols':"A,B",'skiprows':12},
+          'NNA con Atencion inadecuada': {'xlsx':ENDESA_2019_os[1],'sheet_name':'10.3','usecols':"A,D",'skiprows':13},
+          'Indice de Desarrollo Infantil Temprano': {'xlsx':ENDESA_2019_os[1],'sheet_name':'11.1','usecols':"A,F",'skiprows':13}
+          }
+
+
+
+for v in tablas.keys():
+    df=pd.read_excel(io="ENDESA MICS 2019/Excel/"+tablas[v]['xlsx'],sheet_name=tablas[v]['sheet_name'],usecols=tablas[v]['usecols'],skiprows=tablas[v]['skiprows'],nrows=22)
+    print(v)
+    ENDESA_2019[v]=df.drop(['Departamento'],axis=1).sum(axis=1)
+    
+ENDESA_2019['Año']=2019
+
+# exportar la tabla a excel 
+ENDESA_2019.to_excel("ENDESA 2019 NNA.xlsx", sheet_name="ENDESA 2019 ",index=False)
+
+
+
 
 
 
@@ -138,5 +213,5 @@ for Depto in Deptos:
     Poblacion=pd.concat([Poblacion, Pob], ignore_index=True)
     
 
-Poblacion.to_excel("/Users/JuanJose/Desktop/indicadores SIGADENAH.xlsx", sheet_name="Poblacion")
+Poblacion.to_excel("Proyecciones Poblacionales NNA Honduras .xlsx", sheet_name="Poblacion",index=False)
 
